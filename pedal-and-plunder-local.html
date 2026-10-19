@@ -1,0 +1,1387 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pedal & Plunder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Alegreya+Sans:wght@400;500;700;800&display=swap">
+<style>
+:root{
+  --sea:#0e2433; --sea2:#1b3b52; --wood:#6b4423; --wood-md:#5b3a1f; --wood-dk:#3a2412;
+  --parch:#f3e6c4; --parch-dk:#e2cf9f; --parch-lt:#fbf4e0; --ink:#2b1d0e; --ink-soft:#5f4f36;
+  --gold:#e8b84a; --gold-dk:#c98f12; --gold-lt:#f7dc8f; --cream-dim:#d8cba6;
+  --z-none:#d9cba7; --z-yellow:#f4dd6b; --z-green:#3f8f4e; --z-gold:#b07a0c;
+  --ok:#7fd18b; --bad:#e07a5f;
+  --display:'Alfa Slab One', Georgia, 'Times New Roman', serif;
+  --body:'Alegreya Sans', 'Trebuchet MS', 'Segoe UI', sans-serif;
+  color-scheme: dark;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --sea:#0b1e2b; --sea2:#18354a; }
+}
+:root[data-theme="dark"]{ --sea:#0b1e2b; --sea2:#18354a; }
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--sea);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.35}
+button,input,select,textarea{font-family:inherit;font-size:16px;color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.hidden{display:none !important}
+
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--wood-md);border-bottom:5px solid var(--wood-dk);padding:12px 24px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:21;background:var(--wood-md)}
+.brand{display:flex;align-items:center;gap:12px;font-family:var(--display);font-size:26px;color:var(--gold);letter-spacing:.5px}
+.nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{background:var(--wood-dk);color:var(--parch);border-radius:999px;padding:7px 14px;font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px}
+.dot{width:10px;height:10px;border-radius:999px;background:var(--cream-dim);display:inline-block}
+.dot.on{background:var(--ok)}
+.btn{min-height:44px;padding:0 16px;border:3px solid var(--wood-dk);border-radius:10px;background:var(--parch);color:var(--ink);font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn:hover{background:var(--parch-lt)}
+.btn.primary{background:var(--gold);font-family:var(--display);font-weight:400;font-size:19px;box-shadow:0 5px 0 var(--wood-dk);border-width:4px;border-radius:12px;padding:0 24px}
+.btn.primary:hover{background:var(--gold-lt)}
+.btn.ghost{background:transparent;color:var(--parch);border-color:var(--cream-dim)}
+.btn.small{min-height:36px;padding:0 10px;font-size:14px;border-width:2px}
+.btn[aria-pressed="true"]{background:var(--wood-md);color:var(--parch)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+main{width:100%;max-width:1200px;margin:0 auto;padding:22px;display:flex;flex-direction:column;gap:20px}
+.row{display:flex;flex-wrap:wrap;gap:20px;align-items:stretch}
+.panel{background:var(--parch);border:4px solid var(--wood);border-radius:12px;box-shadow:0 5px 0 var(--wood-dk);padding:18px 20px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.panel.sea{background:var(--sea2);color:var(--parch)}
+.ptitle{font-family:var(--display);font-size:18px;color:var(--wood-md);margin:0;font-weight:400}
+.panel.sea .ptitle{color:var(--gold)}
+.kv{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.kv input{width:88px;min-height:40px;border:2px solid var(--wood);border-radius:8px;background:var(--parch-lt);padding:0 8px;text-align:right;font-weight:800}
+.muted{color:var(--ink-soft)}
+.panel.sea .muted{color:var(--cream-dim)}
+.seg{display:flex;background:var(--parch-dk);border-radius:10px;padding:4px;gap:4px}
+.seg button{flex:1;min-height:44px;border:none;border-radius:8px;background:transparent;color:var(--ink-soft);font-weight:800;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--wood-md);color:var(--parch)}
+
+.bpm-wrap{flex:2 1 380px;align-items:center;justify-content:center;text-align:center;gap:0}
+.target-lbl{font-size:15px;font-weight:800;letter-spacing:2px;color:var(--ink-soft)}
+.target{font-family:var(--display);font-size:44px;line-height:1;color:var(--wood)}
+.bpm{font-family:var(--display);font-size:clamp(96px,16vw,170px);line-height:1;margin-top:6px;font-variant-numeric:tabular-nums}
+.bpm.idle{color:#9c8a68}
+.zone-pill{margin-top:12px;border-radius:999px;padding:6px 18px;font-weight:800;font-size:17px;border:2px solid var(--wood-dk)}
+.zone-gold{background:var(--z-gold);color:#fff}
+.zone-green{background:var(--z-green);color:#fff}
+.zone-yellow{background:var(--z-yellow);color:#3d3206}
+.zone-none{background:var(--z-none);color:#4a3d28}
+
+.coin{image-rendering:pixelated;display:block}
+.poe-total{font-family:var(--display);font-size:40px;line-height:1;color:var(--gold-lt);font-variant-numeric:tabular-nums}
+.perhit{background:var(--sea);border-radius:10px;padding:10px 14px;display:flex;justify-content:space-between;align-items:baseline;position:relative}
+.perhit b{font-family:var(--display);font-weight:400;font-size:30px;color:var(--gold-lt)}
+.pops{position:relative;height:0}
+.pop{position:absolute;right:10px;bottom:0;font-family:var(--display);font-size:22px;color:var(--gold-lt);pointer-events:none;animation:rise .7s ease-out forwards;text-shadow:0 2px 0 var(--wood-dk)}
+@keyframes rise{from{transform:translateY(0);opacity:1}to{transform:translateY(-60px);opacity:0}}
+@media (prefers-reduced-motion: reduce){ .pop{display:none} .bump{animation:none !important} }
+.bump{animation:bump .35s ease-out}
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
+
+.zonebar{position:relative;padding-top:24px}
+.zones{display:flex;height:60px;border:3px solid var(--wood-dk);border-radius:10px;overflow:hidden;font-weight:800}
+.zones div{display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden;white-space:nowrap}
+.marker{position:absolute;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;transition:left .08s linear}
+.marker span{background:var(--ink);color:var(--parch);font-weight:800;font-size:14px;border-radius:6px;padding:1px 8px}
+.marker i{width:4px;height:66px;background:#1e1406;border-radius:2px;margin-top:2px}
+.ticks{display:flex;justify-content:space-between;font-size:14px;color:var(--ink-soft);font-weight:700}
+
+.ladder{display:flex;gap:6px}
+.ladder div{flex:1;text-align:center;padding:8px 0;border-radius:8px;background:var(--parch-dk);color:var(--ink-soft);font-weight:800}
+.ladder div.reached{background:var(--wood-md);color:var(--parch)}
+.ladder div.current{outline:3px solid var(--gold-dk);outline-offset:2px}
+.ladder-lbls{display:flex;gap:6px;font-size:13px;color:var(--ink-soft);font-weight:700}
+.ladder-lbls span{flex:1;text-align:center}
+.bar{height:14px;background:var(--parch-dk);border-radius:999px;overflow:hidden;border:2px solid var(--wood)}
+.bar>div{height:100%;background:var(--gold-dk);width:0}
+.mult-big{font-family:var(--display);font-size:68px;line-height:1;color:#8a5f12;min-width:150px}
+.balance{display:flex;height:14px;border-radius:999px;overflow:hidden;border:2px solid var(--wood)}
+.balance div:first-child{background:var(--sea2)}
+.balance div:last-child{background:var(--gold-dk)}
+.hint{color:var(--cream-dim);font-size:15px;text-align:center}
+.hint kbd,.kbd{background:var(--parch);color:var(--ink);border-radius:5px;padding:1px 7px;font-family:var(--body);font-weight:800;border-bottom:3px solid var(--wood)}
+
+/* settings */
+.field{display:flex;flex-direction:column;gap:6px;flex:1 1 180px;min-width:0}
+.field label,.flabel{font-weight:700;font-size:16px}
+.field input,.field select,.field textarea{min-height:44px;border:2px solid var(--wood);border-radius:8px;background:var(--parch-lt);padding:0 10px;color:var(--ink);width:100%}
+.panel.sea .field input,.panel.sea .field select{background:var(--sea);color:var(--parch);border-color:var(--gold)}
+.fields{display:flex;flex-wrap:wrap;gap:12px}
+.note{font-size:15px}
+.err{color:#9b2c12;font-weight:700}
+.panel.sea .err{color:#ffb4a0}
+
+/* summary */
+.big-total{font-family:var(--display);font-size:clamp(56px,10vw,96px);line-height:1}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+.stat{background:var(--parch);border:4px solid var(--wood);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+.stat .k{font-size:15px;font-weight:800;color:var(--ink-soft)}
+.stat .v{font-family:var(--display);font-size:32px}
+.purse{font-family:var(--display);font-size:34px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+
+/* log */
+.chart-scroll{overflow-x:auto}
+.chart{min-width:520px;height:260px;display:flex;align-items:flex-end;gap:10px;border-bottom:3px solid var(--wood-dk);padding:0 4px}
+.chart .col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;height:100%;min-width:0}
+.chart .col b{font-size:13px;color:#4a3d28}
+.chart .col div{width:100%;max-width:56px;border:3px solid var(--wood-dk);border-bottom:none;border-radius:6px 6px 0 0;background:var(--sea2)}
+.chart .col.latest div{background:var(--gold-dk)}
+.chart-x{min-width:520px;display:flex;gap:10px;padding:6px 4px 0;font-size:13px;font-weight:700;color:var(--ink-soft)}
+.chart-x span{flex:1;text-align:center;min-width:0;overflow:hidden;white-space:nowrap}
+table{width:100%;min-width:560px;border-collapse:collapse}
+th{text-align:left;color:var(--ink-soft);font-size:14px;padding:8px 10px;border-bottom:3px solid var(--wood)}
+td{padding:9px 10px;border-bottom:1px solid #d9c592}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:14px;font-weight:800}
+.badge.dep{background:var(--sea2);color:var(--parch)}
+.badge.nodep{border:2px dashed var(--ink-soft);color:#4a3d28}
+
+/* debug drawer */
+#debug{position:fixed;top:0;right:0;bottom:0;width:min(400px,100%);background:#10202c;color:#e6dcc0;border-left:4px solid var(--wood-dk);z-index:30;overflow-y:auto;padding:calc(env(safe-area-inset-top,0px) + 14px) 16px calc(env(safe-area-inset-bottom,0px) + 24px);font-size:15px;display:flex;flex-direction:column;gap:14px}
+#debug h3{font-family:var(--display);font-weight:400;color:var(--gold);font-size:17px;margin:0}
+#debug .dsec{border:2px solid #2c465a;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px}
+#debug .btn{background:#e6dcc0}
+#debug .btn.small{min-height:36px}
+#debug .drow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+#debug input,#debug select,#debug textarea{background:#0b1720;color:#e6dcc0;border:2px solid #2c465a;border-radius:6px;min-height:36px;padding:0 8px}
+#debug textarea{width:100%;min-height:90px;padding:8px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+#debug .mono{font-family:ui-monospace,Consolas,monospace;font-size:13px;white-space:pre-wrap;word-break:break-word}
+#debug .grid2{display:grid;grid-template-columns:auto 1fr;gap:2px 12px}
+#debug .grid2 span:nth-child(odd){color:#9fb3c2}
+#evlog{max-height:180px;overflow-y:auto}
+
+#micMeter{position:relative;height:24px;background:var(--parch-dk);border:2px solid var(--wood);border-radius:8px;overflow:hidden}
+#micLevel{height:100%;width:0;background:var(--sea2)}
+#micLevel.hit{background:var(--gold-dk)}
+#micThrMark{position:absolute;top:0;bottom:0;width:3px;margin-left:-1px;background:var(--ink)}
+#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 24px);transform:translateX(-50%);background:var(--ink);color:var(--parch);border:3px solid var(--gold);border-radius:12px;padding:12px 18px;font-weight:700;z-index:40;max-width:min(560px,92vw);box-shadow:0 5px 0 var(--wood-dk)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <img class="coin" id="brandCoin" alt="" width="38" height="32">
+    <span>Pedal &amp; Plunder</span>
+  </div>
+  <nav class="nav" aria-label="Main">
+    <span class="chip"><span class="dot on" id="inputDot"></span><span id="inputLbl">Keyboard</span></span>
+    <span class="chip">Pirate: <span id="pirateLbl">Ganning</span></span>
+    <button class="btn" data-view="play" aria-pressed="true">Play</button>
+    <button class="btn" data-view="log" aria-pressed="false">Ship’s log</button>
+    <button class="btn" data-view="settings" aria-pressed="false">Settings</button>
+    <button class="btn" id="debugBtn" aria-pressed="false" title="Toggle with the ` key">Debug</button>
+  </nav>
+</header>
+
+<!-- PLAY -->
+<main id="view-play">
+  <div class="row">
+    <section class="panel" style="flex:1 1 240px">
+      <h2 class="ptitle">Session</h2>
+      <div class="seg" role="group" aria-label="Mode">
+        <button id="modeFree" aria-pressed="true">Freeform</button>
+        <button id="modeClick" aria-pressed="false">Click track</button>
+      </div>
+      <div class="kv"><label for="qGolden">Golden BPM</label><input id="qGolden" type="number" min="30" max="400"></div>
+      <div class="kv" id="qClickRow"><label for="qClick">Click BPM</label><input id="qClick" type="number" min="30" max="400"></div>
+      <div class="kv"><span>Subdivision</span><strong id="subLbl">16th notes</strong></div>
+      <div class="kv"><span>Session time</span><strong id="sessTime">0:00</strong></div>
+      <div class="kv"><span>Total hits</span><strong id="sessHits">0</strong></div>
+    </section>
+
+    <section class="panel bpm-wrap">
+      <div id="targetBox"><div class="target-lbl">TARGET</div><div class="target" id="targetNum">195</div></div>
+      <div class="bpm idle" id="bpmNum" aria-live="off">—</div>
+      <div class="muted" style="font-weight:700">BPM, measured in <span id="subLbl2">16ths</span></div>
+      <div class="zone-pill zone-none" id="zonePill">Press space to start</div>
+    </section>
+
+    <section class="panel sea" style="flex:1 1 240px">
+      <h2 class="ptitle">Pieces of Eight</h2>
+      <div style="display:flex;align-items:center;gap:12px">
+        <img class="coin" id="poeCoin" alt="" width="57" height="48">
+        <div class="poe-total" id="poeTotal">0</div>
+      </div>
+      <div>earned this session</div>
+      <div class="pops" id="pops"></div>
+      <div class="perhit"><span>Each hit now</span><b id="perHit">+1</b></div>
+      <div class="muted" id="bestRun">No steady runs yet</div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <h2 class="ptitle">Tempo zones</h2>
+      <div class="muted" id="zoneLegend"></div>
+    </div>
+    <div class="zonebar">
+      <div class="marker hidden" id="marker"><span id="markerNum">0</span><i></i></div>
+      <div class="zones" id="zones"></div>
+    </div>
+    <div class="ticks" id="ticks"></div>
+  </section>
+
+  <div class="row">
+    <section class="panel" style="flex:2 1 420px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
+        <h2 class="ptitle">Multiplier</h2>
+        <div class="muted" id="multBreak">steady ×1, zone ×1</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+        <div class="mult-big" id="multBig">×1</div>
+        <div style="flex:1 1 260px;display:flex;flex-direction:column;gap:8px">
+          <div class="ladder" id="ladder"></div>
+          <div class="ladder-lbls" id="ladderLbls"></div>
+          <div class="bar"><div id="ladderBar"></div></div>
+          <div id="ladderTxt">Play steadily to climb the ladder.</div>
+        </div>
+      </div>
+    </section>
+    <section class="panel" style="flex:1 1 280px">
+      <h2 class="ptitle">Current run</h2>
+      <div class="kv"><span>Run length</span><strong id="runLen">—</strong></div>
+      <div class="kv"><span>Spacing accuracy</span><strong id="runAcc">—</strong></div>
+      <div class="kv"><span>Left/right evenness</span><strong id="evenTxt">—</strong></div>
+      <div class="kv"><span>Foot balance</span><strong id="footTxt">L 0 · R 0</strong></div>
+      <div class="balance"><div id="balL" style="flex:1"></div><div id="balR" style="flex:1"></div></div>
+    </section>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px">
+    <div class="hint"><kbd>Space</kbd> hit (alternates feet) &nbsp; <kbd>F</kbd> left foot &nbsp; <kbd>J</kbd> right foot &nbsp; <kbd>`</kbd> debug</div>
+    <button class="btn primary" id="endBtn">End session &amp; collect</button>
+  </div>
+</main>
+
+<!-- SUMMARY -->
+<main id="view-summary" class="hidden">
+  <section class="panel" style="align-items:center;text-align:center;gap:6px;padding:26px">
+    <div class="target-lbl">YOUR FEET EARNED</div>
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:center">
+      <img class="coin" id="sumCoin" alt="" width="95" height="80">
+      <div class="big-total" id="sumTotal">0</div>
+    </div>
+    <div style="font-size:20px;font-weight:700;color:var(--wood)" id="sumSub"></div>
+  </section>
+  <div class="stats" id="sumStats"></div>
+  <section class="panel sea" style="flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <h2 class="ptitle" id="purseTitle">Purse</h2>
+      <div class="purse" id="purseLine"></div>
+      <div class="muted" id="purseNote"></div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn ghost" id="resumeBtn">Resume session</button>
+      <button class="btn ghost" id="noDepBtn">End without depositing</button>
+      <button class="btn primary" id="depBtn">Deposit</button>
+    </div>
+  </section>
+</main>
+
+<!-- LOG -->
+<main id="view-log" class="hidden">
+  <div class="stats" id="logCards"></div>
+  <section class="panel">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:center">
+      <h2 class="ptitle">PoE per minute, by session</h2>
+      <div class="seg" role="group" aria-label="Range">
+        <button data-range="10" aria-pressed="true" style="padding:0 14px">Last 10</button>
+        <button data-range="30" aria-pressed="false" style="padding:0 14px">Last 30</button>
+        <button data-range="all" aria-pressed="false" style="padding:0 14px">All</button>
+      </div>
+    </div>
+    <div class="chart-scroll">
+      <div class="chart" id="chart"></div>
+      <div class="chart-x" id="chartX"></div>
+    </div>
+    <div class="muted note">Rates are adjusted to a payout scale of 1, so changing the scale doesn’t distort your trend.</div>
+  </section>
+  <section class="panel">
+    <h2 class="ptitle">Sessions</h2>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>Date and time</th><th>Duration</th><th class="num">PoE earned</th><th class="num">PoE / min</th><th>Purse</th></tr></thead>
+        <tbody id="logRows"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<!-- SETTINGS -->
+<main id="view-settings" class="hidden">
+  <div class="row">
+    <section class="panel" style="flex:1 1 520px">
+      <h2 class="ptitle">Pedals</h2>
+      <div class="drow" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <button class="btn" id="midiConnect">Connect MIDI</button>
+        <span class="note" id="midiStatus">Not connected. The keyboard works in the meantime.</span>
+      </div>
+      <div class="field"><label for="midiIn">MIDI input</label><select id="midiIn" disabled><option>No MIDI inputs found</option></select></div>
+      <div class="fields">
+        <div class="field" style="background:var(--parch-dk);border-radius:10px;padding:12px">
+          <span class="flabel">Left foot</span><span class="note" id="midiLeftLbl">Not assigned</span>
+          <button class="btn" id="learnL" disabled>Learn: kick left pedal</button>
+        </div>
+        <div class="field" style="background:var(--parch-dk);border-radius:10px;padding:12px">
+          <span class="flabel">Right foot</span><span class="note" id="midiRightLbl">Not assigned</span>
+          <button class="btn" id="learnR" disabled>Learn: kick right pedal</button>
+        </div>
+      </div>
+      <div style="border-top:2px dashed var(--wood);padding-top:14px;display:flex;flex-direction:column;gap:12px">
+        <span class="flabel">Microphone (a stand-in until the triggers are ready)</span>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <button class="btn" id="micToggle">Start microphone</button>
+          <button class="btn" id="micCal" disabled>Set from room noise</button>
+        </div>
+        <span class="note" id="micStatus">Off. Every kick the mic hears counts as a hit. It can’t tell left from right, so hits alternate feet.</span>
+        <div class="field"><label for="micDev">Microphone</label><select id="micDev" disabled><option>Start the microphone to choose one</option></select></div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div id="micMeter" role="img" aria-label="Microphone level"><div id="micLevel"></div><div id="micThrMark"></div></div>
+          <div class="ticks"><span>−60 dB</span><span>−40</span><span>−20</span><span>0 dB</span></div>
+        </div>
+        <div class="fields">
+          <div class="field"><label for="s-micThreshDb">Hit threshold: <span id="micThrLbl">−30</span> dB</label><input id="s-micThreshDb" data-key="micThreshDb" type="range" min="-60" max="0" step="1" style="padding:0"></div>
+          <div class="field"><label for="s-micGuardMs">Ignore re-triggers within (ms)</label><input id="s-micGuardMs" data-key="micGuardMs" type="number" min="10" max="200"></div>
+        </div>
+        <label style="display:flex;gap:10px;align-items:center;font-weight:700;min-height:44px"><input type="checkbox" id="micLow" style="width:22px;height:22px;flex:none">Low end only. Can help on a real kick drum if the click track leaks into the mic; leave it off for practice pads.</label>
+      </div>
+      <div class="field"><label for="s-debounceMs">Ignore double-triggers within (ms)</label><input id="s-debounceMs" data-key="debounceMs" type="number" min="0" max="60"></div>
+    </section>
+
+    <section class="panel" style="flex:1 1 520px">
+      <h2 class="ptitle">Tempo</h2>
+      <div class="fields">
+        <div class="field"><label for="s-subdiv">Each hit counts as</label>
+          <select id="s-subdiv" data-key="subdiv"><option value="4">16th notes</option><option value="6">16th triplets</option><option value="2">8th notes</option></select></div>
+        <div class="field"><label for="s-clickBpm">Click track BPM</label><input id="s-clickBpm" data-key="clickBpm" type="number" min="30" max="400"></div>
+      </div>
+      <div class="fields">
+        <div class="field"><label for="s-tolPct">Steadiness tolerance (± % of spacing)</label><input id="s-tolPct" data-key="tolPct" type="number" min="1" max="50" step="0.5"></div>
+        <div class="field"><label for="s-pauseS">A run ends after a pause of (s)</label><input id="s-pauseS" data-key="pauseS" type="number" min="0.1" max="5" step="0.1"></div>
+      </div>
+      <div class="fields">
+        <div class="field"><label for="s-slipLimit">Lose a rung after this many slips in 8 hits</label><input id="s-slipLimit" data-key="slipLimit" type="number" min="1" max="8" step="1"></div>
+        <div class="field"><label for="s-driftPct">Tempo drift allowed (± %)</label><input id="s-driftPct" data-key="driftPct" type="number" min="1" max="20" step="0.5"></div>
+      </div>
+      <div class="fields">
+        <div class="field"><label for="s-lockBpm">BPM display holds steady within (± BPM)</label><input id="s-lockBpm" data-key="lockBpm" type="number" min="0.5" max="20" step="0.5"></div>
+      </div>
+      <p class="note muted" style="margin:0">The tempo locks after your first few hits. Each hit is checked against the locked tempo: one off by more than the tolerance is a slip, and one off by three times the tolerance, like a missed note, drops a rung right away. The locked tempo only moves when your running average drifts outside the hold range.</p>
+    </section>
+
+    <section class="panel" style="flex:1 1 520px">
+      <h2 class="ptitle">Golden tempo</h2>
+      <div class="field"><label for="s-golden">Golden BPM</label><input id="s-golden" data-key="golden" type="number" min="30" max="400"></div>
+      <div class="fields">
+        <div class="field"><label for="s-goldW">Gold ×5 (± BPM)</label><input id="s-goldW" data-key="goldW" type="number" min="0" step="0.5"></div>
+        <div class="field"><label for="s-greenW">Green ×3 (± BPM)</label><input id="s-greenW" data-key="greenW" type="number" min="0" step="0.5"></div>
+        <div class="field"><label for="s-yellowW">Yellow ×2 (± BPM)</label><input id="s-yellowW" data-key="yellowW" type="number" min="0" step="0.5"></div>
+      </div>
+    </section>
+
+    <section class="panel" style="flex:1 1 520px">
+      <h2 class="ptitle">Rewards</h2>
+      <span class="flabel">Steadiness ladder (seconds to reach)</span>
+      <div class="fields">
+        <div class="field" style="flex-basis:90px"><label for="s-l0">×2</label><input id="s-l0" data-key="ladder.0" type="number" min="0" step="0.5"></div>
+        <div class="field" style="flex-basis:90px"><label for="s-l1">×5</label><input id="s-l1" data-key="ladder.1" type="number" min="0" step="0.5"></div>
+        <div class="field" style="flex-basis:90px"><label for="s-l2">×10</label><input id="s-l2" data-key="ladder.2" type="number" min="0" step="0.5"></div>
+        <div class="field" style="flex-basis:90px"><label for="s-l3">×100</label><input id="s-l3" data-key="ladder.3" type="number" min="0" step="0.5"></div>
+      </div>
+      <div class="fields">
+        <div class="field"><label for="s-stumble">On a stumble</label><select id="s-stumble" data-key="stumble"><option value="drop">Drop one rung</option><option value="reset">Back to ×1</option></select></div>
+        <div class="field"><label for="s-scale">Payout scale (PoE per base hit)</label><input id="s-scale" data-key="scale" type="number" min="0.01" step="0.01"></div>
+      </div>
+    </section>
+
+    <section class="panel sea" style="flex:1 1 100%">
+      <h2 class="ptitle">Treasury link</h2>
+      <div class="fields" style="align-items:flex-end">
+        <div class="field"><label for="s-pirate">Pay this pirate</label><select id="s-pirate"></select></div>
+        <div class="field" style="flex:2 1 360px">
+          <span class="flabel">Server folder (holds wallets.txt)</span>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <span id="folderLbl" class="note" style="flex:1 1 200px">Not linked. Deposits update this app’s copy of wallets.txt and offer it as a download.</span>
+            <button class="btn" id="linkFolder">Link folder…</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div class="err" id="settingsMsg" role="status"></div>
+</main>
+
+<!-- DEBUG -->
+<aside id="debug" class="hidden" aria-label="Debug and admin">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <h3>Debug &amp; admin</h3>
+    <button class="btn small" id="debugClose">Close</button>
+  </div>
+
+  <div class="dsec">
+    <h3>Engine</h3>
+    <div class="grid2 mono" id="dbgEngine"></div>
+    <div class="mono" id="dbgIv"></div>
+  </div>
+
+  <div class="dsec">
+    <h3>Auto-drummer</h3>
+    <div class="drow"><label for="autoBpm">BPM</label><input id="autoBpm" type="number" min="30" max="400" value="195" style="width:80px">
+      <label for="autoJit">Jitter ±%</label><input id="autoJit" type="number" min="0" max="40" step="0.5" value="2" style="width:70px"></div>
+    <input id="autoSlide" type="range" min="40" max="280" value="195" aria-label="Auto-drummer BPM" style="width:100%">
+    <div class="drow">
+      <button class="btn small" id="autoToggle">Start</button>
+      <button class="btn small" id="autoStumble">Stumble once</button>
+      <button class="btn small" id="autoPause">Pause 1 s</button>
+    </div>
+  </div>
+
+  <div class="dsec">
+    <h3>Session</h3>
+    <div class="drow">
+      <button class="btn small" id="add1k">+1,000 PoE</button>
+      <button class="btn small" id="add100k">+100,000 PoE</button>
+      <button class="btn small" id="resetSess">Reset (not logged)</button>
+    </div>
+    <div class="drow"><label for="forceTier">Force rung</label>
+      <select id="forceTier"><option value="0">×1</option><option value="1">×2</option><option value="2">×5</option><option value="3">×10</option><option value="4">×100</option></select>
+      <button class="btn small" id="forceTierBtn">Apply</button></div>
+  </div>
+
+  <div class="dsec">
+    <h3>Wallet (wallets.txt)</h3>
+    <div class="note" id="dbgWalletSrc"></div>
+    <textarea id="walletText" spellcheck="false" aria-label="wallets.txt contents"></textarea>
+    <div class="drow">
+      <button class="btn small" id="walletSave">Save text</button>
+      <label class="btn small" style="cursor:pointer">Load file<input type="file" id="walletFile" accept=".txt,text/plain" class="hidden"></label>
+      <button class="btn small" id="walletDl">Download</button>
+      <button class="btn small" id="walletRestore">Restore backup</button>
+      <button class="btn small" id="walletReset">Reset to 0</button>
+    </div>
+  </div>
+
+  <div class="dsec">
+    <h3>History</h3>
+    <div class="drow">
+      <button class="btn small" id="histSeed">Add 10 sample sessions</button>
+      <button class="btn small" id="histClear">Clear history</button>
+      <button class="btn small" id="histDl">Download sessions.txt</button>
+    </div>
+  </div>
+
+  <div class="dsec">
+    <h3>Events</h3>
+    <div class="mono" id="evlog"></div>
+  </div>
+</aside>
+
+<div id="toast" class="hidden" role="status"></div>
+
+<script>
+'use strict';
+/* ---------- basics ---------- */
+const COIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAQCAYAAAD0xERiAAAB7UlEQVQ4T62TTUhUURiGn+vkKDbjT8WkMcwsatTxtDCCFq0MbgPmKpKgTYsIop9NIIIuFBciQYoFbSQKh1wWRLVq6C7cSBAVdpihP/uxycHQxpkhKZkbZ/LemnGsu+hZfefjfs95+bhH4z+iWYUQwrRqhZRS9eyzQkppf1+OItnRLklLOEygykVz4BDU+gAffLqD3jPvTFaaajMcywqp2ncVmnrgGEurT9gWGoF0Aio19O4rzmVW4284kimsdIoTkYNlU5VeWip3lCy+IAk3CnJbJWe6W9nd1MTofYPsC1EktGV/7kyh778ESxL99D2ohqvDEdrqgMUYbGkmX+Pj7psk18Ze28J/JlP/W3Tcz+HOm6C9h3wDaHn4Mce0luB45Aai/ldCO6ISDvRnCvXs8w8svANzJ8w8EsQu+2HNA8EucNdBRQ4WDeaCe4lGR5meatgos+pSYiMV4ApC6Dx4vPDlJWQy4PHz7MEgPVPmb5kSbRcwcbYW82Mcb1Ual+aBHWH2nHrMyQgMXJxgPmXAcgJv/T5SayY1VBN7anBr0lUsWw9RFhmXfJ4dIv31Ld+TBpXfIJd1kw110NF5HdFSZmebvQL9yDlSbsnDyT4aV5Kw/Irb8TwXemfUXEGkZhztTLE+YIoDAnJ22xap+icUL9cRb2WwQQAAAABJRU5ErkJggg==';
+['brandCoin','poeCoin','sumCoin'].forEach(id => document.getElementById(id).src = COIN);
+const $ = id => document.getElementById(id);
+const fmt = n => Math.round(n).toLocaleString('en-US');
+const INT_MAX = 2147483647;
+const MULTS = [1, 2, 5, 10, 100];
+const LS = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+const DEFAULTS = { mode: 'free', clickBpm: 195, subdiv: 4, tolPct: 10, lockBpm: 3, slipLimit: 3, driftPct: 5, pauseS: 0.5, debounceMs: 25,
+  golden: 195, goldW: 3, greenW: 10, yellowW: 20, ladder: [3, 8, 15, 25], stumble: 'drop', scale: 1,
+  pirate: 'Ganning', midiLeft: null, midiRight: null,
+  micThreshDb: -30, micGuardMs: 45, micLowpass: false, micDevice: '' };
+let S = Object.assign({}, DEFAULTS, LS.get('pp.settings', {}));
+if (!Array.isArray(S.ladder) || S.ladder.length !== 4) S.ladder = DEFAULTS.ladder.slice();
+if (!S.v || S.v < 2) { S.tolPct = Math.max(S.tolPct, 10); S.v = 2; LS.set('pp.settings', S); }
+const saveSettings = () => LS.set('pp.settings', S);
+const DEFAULT_WALLET = '# pirate|pieces of eight|doubloons\nGanning|0|0\n';
+
+let toastTimer = null;
+function toast(msg, ms = 4000) {
+  const t = $('toast'); t.textContent = msg; t.classList.remove('hidden');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.add('hidden'), ms);
+}
+const events = [];
+function logEv(msg) {
+  const d = new Date();
+  events.unshift(d.toLocaleTimeString('en-US', { hour12: false }) + '  ' + msg);
+  if (events.length > 60) events.pop();
+}
+
+/* ---------- engine ---------- */
+const subName = () => ({ 4: ['16th notes', '16ths'], 6: ['16th triplets', '16th triplets'], 2: ['8th notes', '8ths'] }[S.subdiv] || ['16th notes', '16ths']);
+const tierThr = i => i === 0 ? 0 : S.ladder[i - 1];
+function tierFor(sec) { let t = 0; for (let i = 1; i <= 4; i++) if (sec >= S.ladder[i - 1]) t = i; return t; }
+function zoneFor(bpm) {
+  if (bpm == null) return ['none', 1];
+  const d = Math.abs(bpm - S.golden);
+  if (d <= S.goldW) return ['gold', 5];
+  if (d <= S.greenW) return ['green', 3];
+  if (d <= S.yellowW) return ['yellow', 2];
+  return ['none', 1];
+}
+const bpmOf = ms => 60000 / (ms * S.subdiv);
+// Typical spacing over the last n intervals: median of two-hit spans, halved.
+// Robust to a single bad hit and to a steady left/right lilt.
+function typicalIv(list, n) {
+  const w = list.slice(-n);
+  if (w.length < 3) return w.reduce((a, b) => a + b, 0) / w.length;
+  const p = []; for (let k = 1; k < w.length; k++) p.push(w[k] + w[k - 1]);
+  return median(p) / 2;
+}
+// Trimmed mean: drop the most extreme 10% at each end (a missed note, a flam), average the rest.
+function trimmedMean(list) {
+  const b = list.slice().sort((x, y) => x - y), k = Math.floor(b.length * 0.1);
+  const mid = b.slice(k, b.length - k);
+  return mid.reduce((a, c) => a + c, 0) / mid.length;
+}
+function median(a) { const b = a.slice().sort((x, y) => x - y); const m = b.length >> 1; return b.length % 2 ? b[m] : (b[m - 1] + b[m]) / 2; }
+
+function newSession() {
+  return { startWall: null, firstT: null, lastT: null, hits: 0, poe: 0, L: 0, R: 0, run: null, goldMs: 0,
+    maxMult: 1, maxMultParts: [1, 1], longest: null, consistent: null, fastest: null, lastBpm: null,
+    autoFoot: 'L', debounced: 0 };
+}
+let sess = newSession();
+
+function closeStretch(r) {
+  const st = r && r.stretch; if (!st) return; r.stretch = null;
+  if (st.n < 2) return;
+  const dur = (st.lastT - st.startT) / 1000, mean = st.sum / st.n, bpm = bpmOf(mean);
+  const cv = Math.sqrt(Math.max(0, st.sumsq / st.n - mean * mean)) / mean * 100;
+  if (!sess.longest || dur > sess.longest.dur) sess.longest = { dur, bpm, hits: st.n + 1 };
+  if (dur >= 5) {
+    if (!sess.consistent || cv < sess.consistent.cv) sess.consistent = { cv, bpm };
+    if (!sess.fastest || bpm > sess.fastest.bpm) sess.fastest = { bpm, dur };
+  }
+}
+function endRun() {
+  if (!sess.run) return;
+  closeStretch(sess.run);
+  if (sess.run.hits > 4) logEv('Run ended after ' + sess.run.hits + ' hits');
+  sess.run = null;
+}
+function stumble(t, bpm, why) {
+  const r = sess.run;
+  closeStretch(r);
+  const before = r.steadyStart != null ? tierFor((t - r.steadyStart) / 1000) : 0;
+  if (r.steadyStart != null) {
+    if (S.stumble === 'drop' && before > 0) r.steadyStart = t - tierThr(before - 1) * 1000;
+    else r.steadyStart = t;
+  }
+  const after = r.steadyStart != null ? tierFor((t - r.steadyStart) / 1000) : 0;
+  r.lastTier = after; r.anchor = bpm; r.cooldown = 3; r.slips = [];
+  logEv('Stumble (' + why + ') at ' + bpm.toFixed(1) + ' BPM: ×' + MULTS[before] + ' → ×' + MULTS[after]);
+  if (after < before) flash('multBig');
+}
+
+function hit(foot, t) {
+  if (t == null) t = performance.now();
+  if (sess.lastT != null && t - sess.lastT < S.debounceMs) { sess.debounced++; return; }
+  if (sess.firstT == null) { sess.firstT = t; sess.startWall = Date.now(); logEv('Session started'); }
+  if (foot === 'A') { foot = sess.autoFoot; sess.autoFoot = foot === 'L' ? 'R' : 'L'; }
+  sess.hits++; if (foot === 'L') sess.L++; else sess.R++;
+  let steadyMult = 1, zone = ['none', 1];
+  const gap = sess.lastT == null ? Infinity : t - sess.lastT;
+  if (!sess.run || gap > S.pauseS * 1000) {
+    endRun();
+    sess.run = { startT: t, hits: 1, iv: [], steadyStart: null, anchor: null, cooldown: 0, stretch: null, lastTier: 0, lastDev: null, slips: [], ev: { L: [0, 0], R: [0, 0] }, lockedIv: null, roll: null, offSince: null };
+    sess.lastBpm = null;
+  } else {
+    const r = sess.run, iv = gap;
+    r.iv.push(iv); if (r.iv.length > 64) r.iv.shift();
+    r.hits++;
+    const ev = r.ev[foot]; ev[0] += iv; ev[1]++;
+    // Hidden rolling average; the displayed tempo is "locked" and only moves when the average leaves the hold range.
+    r.roll = trimmedMean(r.iv.slice(-48));
+    const off = r.lockedIv != null ? Math.abs(bpmOf(r.roll) - bpmOf(r.lockedIv)) : 0;
+    if (r.lockedIv == null) {
+      if (r.iv.length >= 3) { r.lockedIv = r.iv.reduce((a, b) => a + b, 0) / r.iv.length; logEv('Tempo locked at ' + bpmOf(r.lockedIv).toFixed(1) + ' BPM'); }
+    } else if (r.iv.length < 24) {
+      // Settling: the first few hits are a rough guess, so keep refining the lock until the average has enough hits.
+      r.lockedIv = r.roll;
+      if (r.iv.length === 23) logEv('Tempo settled at ' + bpmOf(r.lockedIv).toFixed(1) + ' BPM');
+    } else if (off > S.lockBpm) {
+      logEv('Tempo moved: ' + bpmOf(r.lockedIv).toFixed(1) + ' → ' + bpmOf(r.roll).toFixed(1) + ' BPM');
+      r.lockedIv = r.roll; r.offSince = null;
+    } else if (off > 0.4) {
+      // Small but persistent offset: fine-tune after 2 seconds so the display can't stay a few BPM off forever.
+      if (r.offSince == null) r.offSince = t;
+      else if (t - r.offSince > 2000) { logEv('Tempo fine-tuned: ' + bpmOf(r.lockedIv).toFixed(1) + ' → ' + bpmOf(r.roll).toFixed(1) + ' BPM'); r.lockedIv = r.roll; r.offSince = null; }
+    } else r.offSince = null;
+    const bpm = r.lockedIv != null ? bpmOf(r.lockedIv) : null;
+    sess.lastBpm = bpm;
+    if (r.lockedIv != null && r.iv.length >= 4) {
+      // Each hit is judged against the locked tempo. The gap is averaged with the previous one so a
+      // steady left/right lilt isn't punished; a single huge gap (missed note) is still caught below.
+      const prevIv = r.iv[r.iv.length - 2];
+      const dev = Math.abs((iv + prevIv) / 2 - r.lockedIv) / r.lockedIv * 100;
+      const dev1 = Math.abs(iv - r.lockedIv) / r.lockedIv * 100;
+      r.lastDev = dev;
+      const slip = dev > S.tolPct;
+      if (r.cooldown > 0) r.cooldown--;
+      else {
+        r.slips.push(slip); if (r.slips.length > 8) r.slips.shift();
+        const nSlips = r.slips.filter(Boolean).length;
+        const why = dev1 > S.tolPct * 3 ? (iv > r.lockedIv ? 'big late hit or missed note' : 'big early hit')
+          : nSlips >= S.slipLimit ? nSlips + ' slips in 8 hits'
+          : (r.steadyStart != null && Math.abs(bpm - r.anchor) / r.anchor * 100 > S.driftPct) ? (bpm > r.anchor ? 'rushing' : 'dragging')
+          : null;
+        if (why && r.steadyStart != null) stumble(t, bpm, why);
+        else if (why) r.slips = [];
+        else if (!slip) {
+          if (r.steadyStart == null) { r.steadyStart = t; r.anchor = bpm; logEv('Steady at ' + bpm.toFixed(1) + ' BPM'); }
+          if (!r.stretch) r.stretch = { startT: t - iv, lastT: t, n: 0, sum: 0, sumsq: 0 };
+          const st = r.stretch; st.lastT = t; st.n++; st.sum += iv; st.sumsq += iv * iv;
+        } else if (r.stretch) r.stretch.lastT = t;
+      }
+    }
+    if (r.steadyStart != null) {
+      const tier = tierFor((t - r.steadyStart) / 1000);
+      steadyMult = MULTS[tier];
+      if (tier > r.lastTier) { logEv('Climbed to ×' + steadyMult); flash('multBig'); }
+      r.lastTier = tier;
+    }
+    if (bpm != null) { zone = zoneFor(bpm); if (zone[0] === 'gold') sess.goldMs += iv; }
+  }
+  const mult = steadyMult * zone[1];
+  const pay = S.scale * mult;
+  sess.poe += pay;
+  if (mult > sess.maxMult) { sess.maxMult = mult; sess.maxMultParts = [steadyMult, zone[1]]; }
+  sess.lastT = t;
+  popCoin(pay);
+}
+
+/* ---------- views ---------- */
+let view = 'play';
+function show(v) {
+  if (v !== 'play' && v !== 'summary') { /* leaving play doesn't end the session */ }
+  view = v;
+  ['play', 'summary', 'log', 'settings'].forEach(n => $('view-' + n).classList.toggle('hidden', n !== v));
+  document.querySelectorAll('[data-view]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === v || (v === 'summary' && b.dataset.view === 'play'))));
+  if (v === 'log') renderLog();
+  if (v === 'settings') fillSettings();
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => { b.blur(); if (view === 'summary' && b.dataset.view === 'play') return; show(b.dataset.view); }));
+
+/* ---------- static play renders ---------- */
+function renderZones() {
+  const g = S.golden, half = Math.max(30, S.yellowW + 10), lo = g - half;
+  const segs = [
+    ['none', half - S.yellowW], ['yellow', S.yellowW - S.greenW], ['green', S.greenW - S.goldW], ['gold', S.goldW * 2],
+    ['green', S.greenW - S.goldW], ['yellow', S.yellowW - S.greenW], ['none', half - S.yellowW]];
+  const lab = { none: '×1', yellow: '×2', green: '×3', gold: '×5' };
+  $('zones').innerHTML = '';
+  segs.forEach(([z, w]) => {
+    if (w <= 0) return;
+    const d = document.createElement('div'); d.className = 'zone-' + z; d.style.flex = w; d.textContent = lab[z];
+    if (z === 'gold') { d.style.borderLeft = '3px solid var(--wood-dk)'; d.style.borderRight = '3px solid var(--wood-dk)'; }
+    $('zones').appendChild(d);
+  });
+  $('ticks').innerHTML = '';
+  for (let i = 0; i <= 6; i++) { const s = document.createElement('span'); s.textContent = Math.round(lo + i * half / 3); $('ticks').appendChild(s); }
+  const r = v => Math.round((g + v) * 10) / 10;
+  $('zoneLegend').textContent = 'Gold ' + r(-S.goldW) + '–' + r(S.goldW) + ', green ' + r(-S.greenW) + '–' + r(S.greenW) + ', yellow ' + r(-S.yellowW) + '–' + r(S.yellowW);
+  zoneRange = { lo, span: half * 2 };
+}
+let zoneRange = { lo: 165, span: 60 };
+function renderLadder() {
+  $('ladder').innerHTML = ''; $('ladderLbls').innerHTML = '';
+  MULTS.forEach((m, i) => {
+    const d = document.createElement('div'); d.textContent = '×' + m; $('ladder').appendChild(d);
+    const s = document.createElement('span'); s.textContent = i === 0 ? 'start' : S.ladder[i - 1] + ' s'; $('ladderLbls').appendChild(s);
+  });
+}
+function renderStaticPlay() {
+  $('qGolden').value = S.golden; $('qClick').value = S.clickBpm;
+  $('subLbl').textContent = subName()[0]; $('subLbl2').textContent = subName()[1];
+  $('modeFree').setAttribute('aria-pressed', String(S.mode === 'free'));
+  $('modeClick').setAttribute('aria-pressed', String(S.mode === 'click'));
+  $('targetBox').style.visibility = S.mode === 'click' ? 'visible' : 'hidden';
+  $('targetNum').textContent = S.clickBpm;
+  $('pirateLbl').textContent = S.pirate;
+  $('depBtn').textContent = 'Deposit to ' + S.pirate;
+  renderZones(); renderLadder();
+}
+
+/* ---------- live render loop ---------- */
+function setText(id, txt) { const e = $(id); if (e.textContent !== txt) e.textContent = txt; }
+function flash(id) { const e = $(id); e.classList.remove('bump'); void e.offsetWidth; e.classList.add('bump'); }
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let lastPop = 0;
+function popCoin(pay) {
+  if (reduceMotion || view !== 'play') return;
+  const now = performance.now(); if (now - lastPop < 70) return; lastPop = now;
+  const box = $('pops'); if (box.children.length > 10) box.firstChild.remove();
+  const p = document.createElement('div'); p.className = 'pop'; p.textContent = '+' + fmt(pay);
+  p.addEventListener('animationend', () => p.remove()); box.appendChild(p);
+}
+function fmtDur(sec) { sec = Math.max(0, Math.floor(sec)); const m = Math.floor(sec / 60), s = sec % 60; return m + ':' + String(s).padStart(2, '0'); }
+let dbgTick = 0;
+function frame() {
+  const now = performance.now();
+  if (sess.run && sess.lastT != null && now - sess.lastT > S.pauseS * 1000) endRun();
+  const r = sess.run;
+  if (view === 'play') {
+    const active = !!r && r.lockedIv != null;
+    const bpm = sess.lastBpm;
+    const bEl = $('bpmNum');
+    setText('bpmNum', bpm == null ? '—' : String(Math.round(bpm)));
+    bEl.classList.toggle('idle', !active);
+    const z = active ? zoneFor(bpm) : ['none', 1];
+    const pill = $('zonePill');
+    pill.className = 'zone-pill zone-' + z[0];
+    setText('zonePill', sess.hits === 0 ? 'Press space to start' : !active ? 'Waiting for the next run' :
+      ({ gold: 'GOLD ZONE ×5', green: 'GREEN ZONE ×3', yellow: 'YELLOW ZONE ×2', none: 'Outside the zones ×1' })[z[0]]);
+    const steadySec = r && r.steadyStart != null ? (now - r.steadyStart) / 1000 : 0;
+    const tier = r && r.steadyStart != null ? tierFor(steadySec) : 0;
+    const mult = MULTS[tier] * z[1];
+    setText('multBig', '×' + mult);
+    setText('multBreak', 'steady ×' + MULTS[tier] + ', zone ×' + z[1]);
+    setText('perHit', '+' + fmt(S.scale * (active ? mult : 1)));
+    [...$('ladder').children].forEach((d, i) => { d.classList.toggle('reached', i <= tier); d.classList.toggle('current', i === tier && !!r && r.steadyStart != null); });
+    let pct = 0, txt;
+    if (!r || r.steadyStart == null) txt = sess.hits ? 'Find a steady groove to start climbing.' : 'Play steadily to climb the ladder.';
+    else if (tier >= 4) { pct = 100; txt = steadySec.toFixed(1) + ' s steady. Top rung!'; }
+    else { const a = tierThr(tier), b = tierThr(tier + 1); pct = (steadySec - a) / (b - a) * 100; txt = steadySec.toFixed(1) + ' s steady, ' + (b - steadySec).toFixed(1) + ' s to ×' + MULTS[tier + 1]; }
+    $('ladderBar').style.width = Math.max(0, Math.min(100, pct)) + '%';
+    setText('ladderTxt', txt);
+    setText('poeTotal', fmt(sess.poe));
+    setText('sessHits', fmt(sess.hits));
+    setText('sessTime', sess.firstT == null ? '0:00' : fmtDur(((sess.lastT ?? now) - sess.firstT) / 1000));
+    if (r && r.iv.length >= 3) {
+      const win = r.iv.slice(-12), m = win.reduce((a, b) => a + b, 0) / win.length;
+      const cv = Math.sqrt(win.reduce((a, b) => a + (b - m) * (b - m), 0) / win.length) / m * 100;
+      setText('runAcc', '±' + cv.toFixed(1) + '%');
+    } else setText('runAcc', '—');
+    if (r && r.ev.L[1] > 3 && r.ev.R[1] > 3) {
+      const a = r.ev.L[0] / r.ev.L[1], b = r.ev.R[0] / r.ev.R[1], d = (a - b) / ((a + b) / 2) * 100;
+      setText('evenTxt', Math.abs(d) < 1.5 ? 'even' : (d > 0 ? 'left' : 'right') + ' late ' + Math.abs(d).toFixed(1) + '%');
+    } else setText('evenTxt', '—');
+    setText('runLen', r ? ((sess.lastT - r.startT) / 1000).toFixed(1) + ' s, ' + r.hits + ' hits' : '—');
+    const tot = sess.L + sess.R, lp = tot ? Math.round(sess.L / tot * 100) : 50;
+    setText('footTxt', 'L ' + lp + ' · R ' + (100 - lp));
+    $('balL').style.flex = lp; $('balR').style.flex = 100 - lp;
+    setText('bestRun', sess.longest ? 'Best steady run: ' + sess.longest.dur.toFixed(1) + ' s at ' + Math.round(sess.longest.bpm) : 'No steady runs yet');
+    const mk = $('marker');
+    if (active && bpm != null) {
+      mk.classList.remove('hidden');
+      mk.style.left = Math.max(0, Math.min(100, (bpm - zoneRange.lo) / zoneRange.span * 100)) + '%';
+      setText('markerNum', String(Math.round(bpm)));
+    } else mk.classList.add('hidden');
+  }
+  renderMicMeter();
+  if (!$('debug').classList.contains('hidden') && (dbgTick++ % 6 === 0)) renderDebug(now);
+  requestAnimationFrame(frame);
+}
+
+/* ---------- input: keyboard ---------- */
+document.addEventListener('keydown', e => {
+  const tag = (e.target.tagName || '').toLowerCase();
+  const typing = tag === 'input' || tag === 'textarea' || tag === 'select' || e.target.isContentEditable;
+  if (e.key === '`' && !typing) { e.preventDefault(); toggleDebug(); return; }
+  if (typing) return;
+  const isHitKey = e.code === 'Space' || e.code === 'KeyF' || e.code === 'KeyJ';
+  if (!isHitKey) return;
+  if (e.code === 'Space') e.preventDefault();
+  if (e.repeat || view !== 'play') return;
+  hit(e.code === 'KeyF' ? 'L' : e.code === 'KeyJ' ? 'R' : 'A', e.timeStamp || performance.now());
+});
+document.addEventListener('keyup', e => { if (e.code === 'Space' && e.target.tagName === 'BUTTON') e.preventDefault(); });
+document.addEventListener('click', e => { const b = e.target.closest('button'); if (b && view === 'play') b.blur(); });
+
+/* ---------- quick session controls ---------- */
+$('qGolden').addEventListener('change', e => { const v = parseFloat(e.target.value); if (v >= 30 && v <= 400) { S.golden = v; saveSettings(); renderStaticPlay(); } else e.target.value = S.golden; e.target.blur(); });
+$('qClick').addEventListener('change', e => { const v = parseFloat(e.target.value); if (v >= 30 && v <= 400) { S.clickBpm = v; saveSettings(); renderStaticPlay(); } else e.target.value = S.clickBpm; e.target.blur(); });
+['qGolden', 'qClick'].forEach(id => $(id).addEventListener('keydown', e => { if (e.key === 'Enter') e.target.blur(); }));
+$('modeFree').addEventListener('click', () => { S.mode = 'free'; saveSettings(); stopClick(); renderStaticPlay(); });
+$('modeClick').addEventListener('click', () => { S.mode = 'click'; saveSettings(); startClick(); renderStaticPlay(); });
+
+/* ---------- click track ---------- */
+let actx = null, clickTimer = null, clickNext = 0, clickBeat = 0;
+function startClick() {
+  try {
+    if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+    actx.resume();
+    stopClick();
+    clickNext = actx.currentTime + 0.1; clickBeat = 0;
+    clickTimer = setInterval(() => {
+      while (clickNext < actx.currentTime + 0.12) {
+        const time = clickNext, acc = clickBeat % 4 === 0;
+        const o = actx.createOscillator(), g = actx.createGain();
+        o.frequency.value = acc ? 1600 : 1000;
+        g.gain.setValueAtTime(0.0001, time);
+        g.gain.exponentialRampToValueAtTime(acc ? 0.5 : 0.3, time + 0.002);
+        g.gain.exponentialRampToValueAtTime(0.0001, time + 0.05);
+        o.connect(g).connect(actx.destination); o.start(time); o.stop(time + 0.06);
+        clickNext += 60 / S.clickBpm; clickBeat++;
+      }
+    }, 25);
+  } catch (err) { toast('The click track couldn’t start: ' + err.message); }
+}
+function stopClick() { if (clickTimer) { clearInterval(clickTimer); clickTimer = null; } }
+
+/* ---------- auto-drummer ---------- */
+const auto = { on: false, timer: null, next: 0, foot: 'L', stumbleNext: false, pauseMs: 0 };
+function autoBpm() { const v = parseFloat($('autoBpm').value); return v >= 30 && v <= 400 ? v : 195; }
+function autoSchedule() {
+  const now = performance.now();
+  if (auto.next < now - 200) auto.next = now + 10;
+  auto.timer = setTimeout(autoTick, Math.max(0, auto.next - now));
+}
+function autoTick() {
+  if (!auto.on) return;
+  const iv = 60000 / (autoBpm() * S.subdiv);
+  const jit = parseFloat($('autoJit').value) || 0;
+  let t = auto.next + (Math.random() * 2 - 1) * jit / 100 * iv;
+  if (auto.stumbleNext) { t += iv * 0.4; auto.stumbleNext = false; }
+  if (view === 'play') hit(auto.foot, t);
+  auto.foot = auto.foot === 'L' ? 'R' : 'L';
+  auto.next += iv;
+  if (auto.pauseMs) { auto.next += auto.pauseMs; auto.pauseMs = 0; }
+  autoSchedule();
+}
+function setAuto(on) {
+  auto.on = on; clearTimeout(auto.timer);
+  $('autoToggle').textContent = on ? 'Stop' : 'Start';
+  if (on) { if (view !== 'play') show('play'); auto.next = performance.now() + 50; autoSchedule(); logEv('Auto-drummer on at ' + autoBpm() + ' BPM'); }
+  else logEv('Auto-drummer off');
+}
+$('autoToggle').addEventListener('click', () => setAuto(!auto.on));
+$('autoStumble').addEventListener('click', () => { auto.stumbleNext = true; });
+$('autoPause').addEventListener('click', () => { auto.pauseMs = 1000; });
+$('autoBpm').addEventListener('input', e => { $('autoSlide').value = e.target.value; });
+$('autoSlide').addEventListener('input', e => { $('autoBpm').value = e.target.value; });
+
+/* ---------- debug drawer ---------- */
+function toggleDebug(force) {
+  const open = force != null ? force : $('debug').classList.contains('hidden');
+  $('debug').classList.toggle('hidden', !open);
+  $('debugBtn').setAttribute('aria-pressed', String(open));
+  if (open) { $('walletText').value = walletCache ?? getLocalWallet(); renderWalletSrc(); }
+}
+$('debugBtn').addEventListener('click', () => toggleDebug());
+$('debugClose').addEventListener('click', () => toggleDebug(false));
+function renderDebug(now) {
+  const r = sess.run;
+  const rows = [
+    ['Run', r ? 'active, ' + r.hits + ' hits' : 'none'],
+    ['Last interval', r && r.iv.length ? r.iv[r.iv.length - 1].toFixed(1) + ' ms' : '—'],
+    ['Median (8)', r && r.iv.length ? median(r.iv.slice(-8)).toFixed(1) + ' ms' : '—'],
+    ['Locked BPM', r && r.lockedIv != null ? bpmOf(r.lockedIv).toFixed(2) + ' (±' + S.lockBpm + ')' : '—'],
+    ['Rolling BPM', r && r.roll != null ? bpmOf(r.roll).toFixed(2) : '—'],
+    ['Hit deviation', r && r.lastDev != null ? r.lastDev.toFixed(1) + '% (limit ' + S.tolPct + '%)' : '—'],
+    ['Slips (last 8)', r ? r.slips.filter(Boolean).length + ' of ' + S.slipLimit + ' allowed' : '—'],
+    ['Anchor BPM', r && r.anchor != null ? r.anchor.toFixed(2) : '—'],
+    ['Steady for', r && r.steadyStart != null ? ((now - r.steadyStart) / 1000).toFixed(2) + ' s' : '—'],
+    ['Cooldown', r ? String(r.cooldown) : '—'],
+    ['Gold time', (sess.goldMs / 1000).toFixed(1) + ' s'],
+    ['Debounced', String(sess.debounced)],
+    ['Session PoE', fmt(sess.poe)]
+  ];
+  $('dbgEngine').innerHTML = '';
+  rows.forEach(([k, v]) => { const a = document.createElement('span'); a.textContent = k; const b = document.createElement('span'); b.textContent = v; $('dbgEngine').append(a, b); });
+  $('dbgIv').textContent = r && r.iv.length ? 'Intervals: ' + r.iv.slice(-12).map(x => x.toFixed(0)).join(' ') : 'Intervals: —';
+  const ev = events.slice(0, 30).join('\n');
+  if ($('evlog').textContent !== ev) $('evlog').textContent = ev || 'Nothing yet';
+}
+$('add1k').addEventListener('click', () => { sess.poe += 1000; if (sess.firstT == null) { sess.firstT = sess.lastT = performance.now(); sess.startWall = Date.now(); } logEv('Admin: +1,000 PoE'); });
+$('add100k').addEventListener('click', () => { sess.poe += 100000; if (sess.firstT == null) { sess.firstT = sess.lastT = performance.now(); sess.startWall = Date.now(); } logEv('Admin: +100,000 PoE'); });
+$('resetSess').addEventListener('click', () => { sess = newSession(); logEv('Admin: session reset'); toast('Session reset. Nothing was logged.'); });
+$('forceTierBtn').addEventListener('click', () => {
+  const r = sess.run; const tier = parseInt($('forceTier').value, 10);
+  if (!r || r.iv.length < 1) { toast('Start playing (or start the auto-drummer) first, then force a rung.'); return; }
+  r.steadyStart = performance.now() - tierThr(tier) * 1000 - 1; r.lastTier = tier; r.anchor = r.anchor ?? sess.lastBpm;
+  logEv('Admin: forced ×' + MULTS[tier]);
+});
+
+/* ---------- files: downloads + linked folder ---------- */
+const dlPromise = (window.claude && typeof window.claude.use === 'function') ? window.claude.use('downloads').catch(() => null) : Promise.resolve(null);
+async function saveFile(filename, text) {
+  const dl = await dlPromise;
+  if (dl) {
+    try { await dl.save({ filename, data: text }); return true; }
+    catch (e) {
+      if (e && e.code === 'declined') return false;
+      if (e && e.code === 'rate_limited') { toast('A save prompt is already open.'); return false; }
+    }
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' }));
+  a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  return true;
+}
+
+// tiny IndexedDB store so a linked folder survives reloads when run locally
+const idb = {
+  open() { return new Promise((res, rej) => { const q = indexedDB.open('pedal-plunder', 1); q.onupgradeneeded = () => q.result.createObjectStore('kv'); q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error); }); },
+  async get(k) { const db = await this.open(); return new Promise(res => { const q = db.transaction('kv').objectStore('kv').get(k); q.onsuccess = () => res(q.result); q.onerror = () => res(undefined); }); },
+  async set(k, v) { const db = await this.open(); return new Promise(res => { const tx = db.transaction('kv', 'readwrite'); tx.objectStore('kv').put(v, k); tx.oncomplete = () => res(); tx.onerror = () => res(); }); }
+};
+let dir = null, dirReady = false, walletCache = null;
+async function readText(name) { try { const fh = await dir.getFileHandle(name); return await (await fh.getFile()).text(); } catch (e) { if (e.name === 'NotFoundError') return null; throw e; } }
+async function writeText(name, text) { const fh = await dir.getFileHandle(name, { create: true }); const w = await fh.createWritable(); await w.write(text); await w.close(); }
+async function ensureDir() {
+  if (!dir) return false;
+  if (dirReady) return true;
+  try {
+    let p = await dir.queryPermission({ mode: 'readwrite' });
+    if (p !== 'granted') p = await dir.requestPermission({ mode: 'readwrite' });
+    dirReady = p === 'granted';
+  } catch (e) { dirReady = false; }
+  renderFolder();
+  return dirReady;
+}
+function renderFolder() {
+  $('folderLbl').textContent = !dir ? 'Not linked. Deposits update this app’s copy of wallets.txt and offer it as a download.'
+    : dirReady ? 'Linked to “' + dir.name + '”. Deposits write wallets.txt there directly, after saving wallets.txt.bak.'
+    : 'Linked to “' + dir.name + '”. Click Reconnect to allow access again.';
+  $('linkFolder').textContent = dir && !dirReady ? 'Reconnect' : dir ? 'Change folder…' : 'Link folder…';
+  renderWalletSrc();
+}
+function renderWalletSrc() {
+  $('dbgWalletSrc').textContent = dir && dirReady ? 'Showing wallets.txt from the linked folder “' + dir.name + '”. Save text writes the file.' : 'Showing this app’s local copy (no folder linked).';
+}
+$('linkFolder').addEventListener('click', async () => {
+  if (dir && !dirReady) { if (await ensureDir()) { await refreshWallet(); toast('Folder reconnected.'); } return; }
+  if (!window.showDirectoryPicker) { toast('Direct file access needs Chrome or Edge running this page from your own computer. Deposits will download wallets.txt instead.', 6000); return; }
+  try {
+    const h = await window.showDirectoryPicker({ mode: 'readwrite' });
+    dir = h; dirReady = true;
+    const w = await readText('wallets.txt');
+    if (w == null) { toast('That folder has no wallets.txt. Pick the folder that contains it.'); dir = null; dirReady = false; renderFolder(); return; }
+    await idb.set('dir', h).catch(() => {});
+    walletCache = w; renderFolder(); fillPirates(); toast('Linked to “' + h.name + '”.');
+  } catch (e) {
+    if (e.name === 'AbortError') return;
+    toast('This page can’t open folders here (' + e.name + '). Run it from a saved copy in Chrome or Edge to link the server folder.', 7000);
+  }
+});
+
+/* ---------- wallet ---------- */
+const getLocalWallet = () => LS.get('pp.wallet', DEFAULT_WALLET);
+function parseRows(text) {
+  return text.split(/\r?\n/).filter(l => l.trim() && !l.trim().startsWith('#')).map(l => { const p = l.split('|'); return { name: p[0], poe: parseInt(p[1], 10) }; });
+}
+function balanceOf(text, name) { const r = parseRows(text).find(x => x.name === name); return r ? r.poe : null; }
+function depositInto(text, name, amt) {
+  const eol = text.includes('\r\n') ? '\r\n' : '\n';
+  let found = false;
+  const out = text.split(/\r?\n/).map(l => {
+    const t = l.trim();
+    if (found || !t || t.startsWith('#')) return l;
+    const p = l.split('|');
+    if (p[0] !== name) return l;
+    const cur = parseInt(p[1], 10);
+    if (isNaN(cur)) throw new Error(name + '’s balance in wallets.txt isn’t a number.');
+    const nv = cur + Math.round(amt);
+    if (nv > INT_MAX) throw new Error('This deposit would push ' + name + ' past ' + fmt(INT_MAX) + ' PoE, the most the server can store. Nothing was written.');
+    p[1] = String(nv); found = true; return p.join('|');
+  });
+  if (!found) throw new Error(name + ' isn’t in wallets.txt. Pick another pirate in Settings.');
+  return out.join(eol);
+}
+async function currentWalletText() {
+  if (dir && dirReady) { const w = await readText('wallets.txt'); if (w != null) { walletCache = w; return w; } }
+  return getLocalWallet();
+}
+async function refreshWallet() { walletCache = await currentWalletText(); fillPirates(); if (!$('debug').classList.contains('hidden')) $('walletText').value = walletCache; renderWalletSrc(); }
+function fillPirates() {
+  const names = parseRows(walletCache ?? getLocalWallet()).map(r => r.name).filter(Boolean);
+  const sel = $('s-pirate'); sel.innerHTML = '';
+  (names.length ? names : [S.pirate]).forEach(n => { const o = document.createElement('option'); o.textContent = n; o.value = n; sel.appendChild(o); });
+  if (names.length && !names.includes(S.pirate)) { S.pirate = names[0]; saveSettings(); }
+  sel.value = S.pirate; renderStaticPlay();
+}
+$('s-pirate').addEventListener('change', e => { S.pirate = e.target.value; saveSettings(); renderStaticPlay(); });
+$('walletSave').addEventListener('click', async () => {
+  const txt = $('walletText').value;
+  try {
+    if (dir && dirReady) { const old = await readText('wallets.txt'); if (old != null) await writeText('wallets.txt.bak', old); await writeText('wallets.txt', txt); }
+    else { LS.set('pp.walletBak', getLocalWallet()); LS.set('pp.wallet', txt); }
+    walletCache = txt; fillPirates(); logEv('Admin: wallet text saved'); toast('wallets.txt saved.');
+  } catch (e) { toast('Couldn’t save wallets.txt: ' + e.message); }
+});
+$('walletFile').addEventListener('change', async e => {
+  const f = e.target.files[0]; if (!f) return;
+  const txt = await f.text(); $('walletText').value = txt; e.target.value = '';
+  toast('Loaded ' + f.name + '. Click Save text to use it.');
+});
+$('walletDl').addEventListener('click', async () => saveFile('wallets.txt', walletCache ?? getLocalWallet()));
+$('walletRestore').addEventListener('click', async () => {
+  try {
+    let bak;
+    if (dir && dirReady) { bak = await readText('wallets.txt.bak'); if (bak == null) { toast('No wallets.txt.bak in the linked folder yet.'); return; } await writeText('wallets.txt', bak); }
+    else { bak = LS.get('pp.walletBak', null); if (bak == null) { toast('No backup yet. One is saved before every deposit.'); return; } LS.set('pp.wallet', bak); }
+    walletCache = bak; $('walletText').value = bak; fillPirates(); logEv('Admin: wallet restored from backup'); toast('Restored the backup of wallets.txt.');
+  } catch (e) { toast('Couldn’t restore: ' + e.message); }
+});
+$('walletReset').addEventListener('click', () => {
+  const txt = walletCache ?? getLocalWallet();
+  const eol = txt.includes('\r\n') ? '\r\n' : '\n';
+  const out = txt.split(/\r?\n/).map(l => { const t = l.trim(); if (!t || t.startsWith('#')) return l; const p = l.split('|'); if (p[0] !== S.pirate) return l; p[1] = '0'; return p.join('|'); }).join(eol);
+  $('walletText').value = out; toast('Set ' + S.pirate + ' to 0 in the editor. Click Save text to apply it.');
+});
+
+/* ---------- history ---------- */
+const getHist = () => LS.get('pp.history', []);
+const HIST_HEADER = '# start|duration_s|poe_earned|payout_scale|deposited|hits|gold_zone_s';
+const histLine = h => [h.start, Math.round(h.durS), Math.round(h.poe), h.scale, h.dep ? 'yes' : 'no', h.hits, Math.round(h.goldS)].join('|');
+async function logSession(dep) {
+  const durS = sess.firstT == null ? 0 : Math.max(1, (sess.lastT - sess.firstT) / 1000);
+  const h = { start: new Date(sess.startWall || Date.now()).toISOString().slice(0, 16), durS, poe: Math.round(sess.poe), scale: S.scale, dep, hits: sess.hits, goldS: sess.goldMs / 1000 };
+  const all = getHist(); all.push(h); LS.set('pp.history', all);
+  if (dir && dirReady) {
+    try { const cur = await readText('sessions.txt'); await writeText('sessions.txt', (cur && cur.trim() ? cur.replace(/\s*$/, '\n') : HIST_HEADER + '\n') + histLine(h) + '\n'); }
+    catch (e) { toast('The session was logged here, but sessions.txt couldn’t be updated: ' + e.message, 6000); }
+  }
+}
+$('histSeed').addEventListener('click', () => {
+  const all = getHist(); const base = Date.now() - 12 * 86400000;
+  const rates = [830, 920, 870, 1100, 1230, 1370, 1490, 1630, 1850, 2010];
+  rates.forEach((rate, i) => {
+    const durS = (15 + Math.round(Math.random() * 15)) * 60;
+    all.push({ start: new Date(base + i * 1.2 * 86400000).toISOString().slice(0, 16), durS, poe: Math.round(rate * durS / 60), scale: 1, dep: i !== 2, hits: Math.round(durS * 9), goldS: Math.round(durS * 0.12), sample: true });
+  });
+  all.sort((a, b) => a.start < b.start ? -1 : 1);
+  LS.set('pp.history', all); logEv('Admin: added 10 sample sessions'); toast('Added 10 sample sessions to the Ship’s log.'); if (view === 'log') renderLog();
+});
+$('histClear').addEventListener('click', () => { if (!confirm('Clear every session from the Ship’s log on this device?')) return; LS.set('pp.history', []); logEv('Admin: history cleared'); toast('History cleared.'); if (view === 'log') renderLog(); });
+$('histDl').addEventListener('click', () => saveFile('sessions.txt', HIST_HEADER + '\n' + getHist().map(histLine).join('\n') + '\n'));
+
+let logRange = '10';
+document.querySelectorAll('[data-range]').forEach(b => b.addEventListener('click', () => { logRange = b.dataset.range; document.querySelectorAll('[data-range]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); renderLog(); }));
+const rateOf = h => h.durS > 0 ? h.poe / (h.scale || 1) / (h.durS / 60) : 0;
+function fmtWhen(iso, short) {
+  const d = new Date(iso);
+  if (isNaN(d)) return iso;
+  return short ? d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    : d.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+}
+function fmtLen(s) { s = Math.round(s); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), sec = s % 60; return h ? h + ' h ' + m + ' m' : m ? m + ' m' + (sec ? ' ' + sec + ' s' : '') : sec + ' s'; }
+function card(k, v, sub, sea) {
+  const d = document.createElement('div'); d.className = 'stat'; if (sea) { d.style.background = 'var(--sea2)'; d.style.color = 'var(--parch)'; }
+  const a = document.createElement('div'); a.className = 'k'; a.textContent = k; if (sea) a.style.color = 'var(--cream-dim)';
+  const b = document.createElement('div'); b.className = 'v'; b.textContent = v; if (sea) b.style.color = 'var(--gold-lt)';
+  const c = document.createElement('div'); c.textContent = sub;
+  d.append(a, b, c); return d;
+}
+function renderLog() {
+  const all = getHist();
+  const cards = $('logCards'); cards.innerHTML = '';
+  if (!all.length) {
+    cards.appendChild(card('No sessions yet', '—', 'End a session on the play screen and it’ll appear here.'));
+    $('chart').innerHTML = ''; $('chartX').innerHTML = ''; $('logRows').innerHTML = '<tr><td colspan="5">No sessions logged yet.</td></tr>';
+    return;
+  }
+  const rates = all.map(rateOf);
+  const latest = rates[rates.length - 1], best = Math.max(...rates);
+  cards.appendChild(card('Latest PoE / min', fmt(latest), latest >= best ? 'your best yet' : 'best is ' + fmt(best), true));
+  if (all.length >= 6) {
+    const f = (rates[0] + rates[1] + rates[2]) / 3, l = rates.slice(-3).reduce((a, b) => a + b, 0) / 3;
+    const pct = f > 0 ? (l - f) / f * 100 : 0;
+    cards.appendChild(card('Earning rate trend', (pct >= 0 ? '+' : '') + Math.round(pct) + '%', 'first 3 sessions vs last 3'));
+  } else cards.appendChild(card('Earning rate trend', '—', 'shows up after 6 sessions'));
+  cards.appendChild(card('Total earned', fmt(all.reduce((a, h) => a + h.poe, 0)), 'across ' + all.length + ' session' + (all.length === 1 ? '' : 's')));
+  cards.appendChild(card('Time on the pedals', fmtLen(all.reduce((a, h) => a + h.durS, 0)), 'since ' + fmtWhen(all[0].start, true)));
+
+  const shown = logRange === 'all' ? all : all.slice(-parseInt(logRange, 10));
+  const max = Math.max(...shown.map(rateOf), 1);
+  $('chart').innerHTML = ''; $('chartX').innerHTML = '';
+  shown.forEach((h, i) => {
+    const col = document.createElement('div'); col.className = 'col' + (i === shown.length - 1 ? ' latest' : '');
+    const b = document.createElement('b'); b.textContent = fmt(rateOf(h));
+    const bar = document.createElement('div'); bar.style.height = Math.max(4, rateOf(h) / max * 210) + 'px';
+    col.title = fmtWhen(h.start) + ': ' + fmt(rateOf(h)) + ' PoE/min';
+    if (shown.length > 20) b.textContent = '';
+    col.append(b, bar); $('chart').appendChild(col);
+    const x = document.createElement('span'); x.textContent = shown.length > 20 ? '' : fmtWhen(h.start, true); $('chartX').appendChild(x);
+  });
+  const tb = $('logRows'); tb.innerHTML = '';
+  all.slice().reverse().forEach(h => {
+    const tr = document.createElement('tr');
+    const cells = [fmtWhen(h.start) + (h.sample ? ' (sample)' : ''), fmtLen(h.durS), fmt(h.poe), fmt(rateOf(h))];
+    cells.forEach((c, i) => { const td = document.createElement('td'); td.textContent = c; if (i >= 2) td.className = 'num'; if (i === 3) td.style.fontWeight = '800'; tr.appendChild(td); });
+    const td = document.createElement('td'); const s = document.createElement('span'); s.className = 'badge ' + (h.dep ? 'dep' : 'nodep'); s.textContent = h.dep ? 'Deposited' : 'Not deposited'; td.appendChild(s); tr.appendChild(td);
+    tb.appendChild(tr);
+  });
+}
+
+/* ---------- summary & deposit ---------- */
+let summaryBusy = false;
+$('endBtn').addEventListener('click', async () => {
+  if (sess.hits === 0 && sess.poe === 0) { toast('Play a few hits first. There’s nothing to collect yet.'); return; }
+  endRun(); if (auto.on) setAuto(false); stopClick();
+  const durS = sess.firstT == null ? 0 : (sess.lastT - sess.firstT) / 1000;
+  $('sumTotal').textContent = fmt(sess.poe);
+  $('sumSub').textContent = 'Pieces of Eight in ' + fmtLen(Math.max(1, durS)) + ', ' + fmt(sess.hits) + ' hits';
+  const st = $('sumStats'); st.innerHTML = '';
+  const L = sess.longest, C = sess.consistent, F = sess.fastest, tot = sess.L + sess.R, lp = tot ? Math.round(sess.L / tot * 100) : 50;
+  st.appendChild(card('Longest steady run', L ? L.dur.toFixed(1) + ' s' : '—', L ? 'at ' + Math.round(L.bpm) + ' BPM, ' + L.hits + ' hits' : 'no steady runs this time'));
+  st.appendChild(card('Most consistent tempo', C ? Math.round(C.bpm) + ' BPM' : '—', C ? 'spacing ±' + C.cv.toFixed(1) + '%' : 'needs a steady run of 5 s or more'));
+  st.appendChild(card('Time in gold zone', fmtLen(sess.goldMs / 1000), durS > 0 ? Math.round(sess.goldMs / 10 / durS) + '% of playing time' : ''));
+  st.appendChild(card('Highest multiplier', '×' + sess.maxMult, 'steady ×' + sess.maxMultParts[0] + ', zone ×' + sess.maxMultParts[1]));
+  st.appendChild(card('Fastest sustained', F ? Math.round(F.bpm) + ' BPM' : '—', F ? 'held ' + F.dur.toFixed(1) + ' s' : 'needs a steady run of 5 s or more'));
+  st.appendChild(card('Foot balance', 'L ' + lp + ' · R ' + (100 - lp), Math.abs(lp - 50) <= 1 ? 'nicely even' : (lp > 50 ? 'left' : 'right') + ' foot slightly ahead'));
+  show('summary');
+  $('purseTitle').textContent = S.pirate + '’s purse';
+  $('purseLine').textContent = 'Checking wallets.txt…'; $('purseNote').textContent = '';
+  try {
+    if (dir) await ensureDir();
+    const w = await currentWalletText();
+    const bal = balanceOf(w, S.pirate);
+    if (bal == null) { $('purseLine').textContent = S.pirate + ' isn’t in wallets.txt'; $('purseNote').textContent = 'Pick another pirate in Settings, or add this one in the debug panel.'; return; }
+    $('purseLine').innerHTML = '';
+    const a = document.createElement('span'); a.style.color = 'var(--cream-dim)'; a.textContent = fmt(bal);
+    const arrow = document.createElement('span'); arrow.textContent = '→'; arrow.style.color = 'var(--gold)';
+    const b = document.createElement('span'); b.style.color = 'var(--gold-lt)'; b.textContent = fmt(bal + Math.round(sess.poe));
+    $('purseLine').append(a, arrow, b);
+    $('purseNote').textContent = dir && dirReady ? 'wallets.txt.bak is saved in “' + dir.name + '” before the deposit.' : 'No server folder linked: this app’s copy is updated and wallets.txt is offered as a download.';
+  } catch (e) { $('purseLine').textContent = 'Couldn’t read wallets.txt'; $('purseNote').textContent = e.message; }
+});
+$('resumeBtn').addEventListener('click', () => show('play'));
+async function finish(dep) {
+  if (summaryBusy) return; summaryBusy = true;
+  try {
+    if (dep) {
+      const amt = Math.round(sess.poe);
+      if (dir && !dirReady) await ensureDir();
+      if (dir && dirReady) {
+        const old = await readText('wallets.txt');
+        if (old == null) throw new Error('wallets.txt is missing from “' + dir.name + '”.');
+        const nw = depositInto(old, S.pirate, amt);
+        await writeText('wallets.txt.bak', old);
+        await writeText('wallets.txt', nw);
+        walletCache = nw;
+        await logSession(true);
+        toast('Deposited ' + fmt(amt) + ' PoE to ' + S.pirate + '. wallets.txt updated.');
+      } else {
+        const old = getLocalWallet();
+        const nw = depositInto(old, S.pirate, amt);
+        LS.set('pp.walletBak', old); LS.set('pp.wallet', nw); walletCache = nw;
+        await logSession(true);
+        toast('Deposited ' + fmt(amt) + ' PoE to ' + S.pirate + ' in this app’s copy of wallets.txt.', 5000);
+        await saveFile('wallets.txt', nw);
+      }
+      logEv('Deposited ' + fmt(amt) + ' to ' + S.pirate);
+    } else {
+      await logSession(false);
+      toast('Session logged without a deposit.');
+      logEv('Session ended without deposit');
+    }
+    sess = newSession();
+    show('play');
+  } catch (e) {
+    toast(e.message, 7000);
+  } finally { summaryBusy = false; }
+}
+$('depBtn').addEventListener('click', () => finish(true));
+$('noDepBtn').addEventListener('click', () => finish(false));
+
+/* ---------- settings ---------- */
+function fillSettings() {
+  document.querySelectorAll('[data-key]').forEach(el => {
+    const k = el.dataset.key;
+    el.value = k.startsWith('ladder.') ? S.ladder[+k.split('.')[1]] : S[k];
+  });
+  fillPirates(); renderFolder(); renderMidi(); renderMicControls();
+  $('settingsMsg').textContent = '';
+}
+document.querySelectorAll('[data-key]').forEach(el => el.addEventListener('change', () => {
+  const k = el.dataset.key;
+  const isNum = el.tagName === 'INPUT' || k === 'subdiv';
+  const v = isNum ? parseFloat(el.value) : el.value;
+  if (isNum && !(Number.isFinite(v) && (k === 'micThreshDb' || v >= 0))) { $('settingsMsg').textContent = 'Enter a number for that setting.'; fillSettings(); return; }
+  const next = Object.assign({}, S, { ladder: S.ladder.slice() });
+  if (k.startsWith('ladder.')) next.ladder[+k.split('.')[1]] = v; else next[k] = v;
+  if (!(next.goldW < next.greenW && next.greenW < next.yellowW)) { $('settingsMsg').textContent = 'Zone widths must grow outward: gold, then green, then yellow.'; fillSettings(); return; }
+  if (!(next.ladder[0] < next.ladder[1] && next.ladder[1] < next.ladder[2] && next.ladder[2] < next.ladder[3])) { $('settingsMsg').textContent = 'Each ladder rung needs more seconds than the one before it.'; fillSettings(); return; }
+  if (next.scale <= 0) { $('settingsMsg').textContent = 'The payout scale must be above 0.'; fillSettings(); return; }
+  if (!(next.slipLimit >= 1 && next.slipLimit <= 8)) { $('settingsMsg').textContent = 'Slips allowed must be between 1 and 8.'; fillSettings(); return; }
+  if (!(next.lockBpm > 0)) { $('settingsMsg').textContent = 'The hold range must be above 0.'; fillSettings(); return; }
+  if (!(next.driftPct > 0)) { $('settingsMsg').textContent = 'Tempo drift allowed must be above 0.'; fillSettings(); return; }
+  S = next; saveSettings(); renderStaticPlay();
+  $('settingsMsg').textContent = '';
+}));
+
+/* ---------- MIDI ---------- */
+let midi = null, learning = null;
+function renderMidi() {
+  $('midiLeftLbl').textContent = S.midiLeft == null ? 'Not assigned' : 'Note ' + S.midiLeft;
+  $('midiRightLbl').textContent = S.midiRight == null ? 'Not assigned' : 'Note ' + S.midiRight;
+  $('learnL').textContent = learning === 'L' ? 'Kick the left pedal now…' : 'Learn: kick left pedal';
+  $('learnR').textContent = learning === 'R' ? 'Kick the right pedal now…' : 'Learn: kick right pedal';
+}
+function onMidi(e) {
+  const [st, note, vel] = e.data; if ((st & 0xf0) !== 0x90 || vel === 0) return;
+  if (learning) {
+    if (learning === 'L') S.midiLeft = note; else S.midiRight = note;
+    learning = null; saveSettings(); renderMidi(); toast('Assigned note ' + note + '.'); return;
+  }
+  if (view !== 'play') return;
+  const foot = note === S.midiLeft ? 'L' : note === S.midiRight ? 'R' : 'A';
+  hit(foot, e.timeStamp || performance.now());
+}
+function bindMidiInputs() {
+  const sel = $('midiIn'); sel.innerHTML = '';
+  const ins = [...midi.inputs.values()];
+  if (!ins.length) { sel.innerHTML = '<option>No MIDI inputs found</option>'; sel.disabled = true; $('midiStatus').textContent = 'MIDI is on, but no devices are plugged in.'; midiActive = false; updateInputLbl(); return; }
+  ins.forEach(i => { const o = document.createElement('option'); o.value = i.id; o.textContent = i.name; sel.appendChild(o); i.onmidimessage = onMidi; });
+  sel.disabled = false; $('learnL').disabled = false; $('learnR').disabled = false;
+  $('midiStatus').textContent = 'Listening to ' + ins.length + ' MIDI input' + (ins.length > 1 ? 's' : '') + '. The keyboard still works too.';
+  midiActive = true; updateInputLbl();
+}
+$('midiConnect').addEventListener('click', async () => {
+  if (!navigator.requestMIDIAccess) { $('midiStatus').textContent = 'This browser doesn’t support Web MIDI. Use Chrome or Edge.'; return; }
+  try { midi = await navigator.requestMIDIAccess(); midi.onstatechange = bindMidiInputs; bindMidiInputs(); }
+  catch (e) { $('midiStatus').textContent = 'MIDI access was blocked here (' + e.name + '). Run a saved copy of this page in Chrome or Edge.'; }
+});
+$('learnL').addEventListener('click', () => { learning = 'L'; renderMidi(); });
+$('learnR').addEventListener('click', () => { learning = 'R'; renderMidi(); });
+
+/* ---------- microphone ---------- */
+let midiActive = false;
+function updateInputLbl() {
+  const parts = [];
+  if (mic.on) parts.push('Mic'); if (midiActive) parts.push('MIDI'); parts.push('Keyboard');
+  $('inputLbl').textContent = parts.join(' + ');
+}
+// Onset detector: a fast peak follower against a slower average. A new kick makes the fast
+// envelope jump well above the slow one; a drum that is still ringing doesn't.
+function makeDetector() {
+  return { fast: 0, slow: 0, last: -1e12,
+    process(x, start, sr, thrLin, guardSamples) {
+      const fd = Math.exp(-1 / (sr * 0.010)), sk = 1 - Math.exp(-1 / (sr * 0.050));
+      const out = []; let peak = 0;
+      for (let i = 0; i < x.length; i++) {
+        const a = Math.abs(x[i]);
+        this.fast = a > this.fast ? a : this.fast * fd;
+        this.slow += (a - this.slow) * sk;
+        if (this.fast > peak) peak = this.fast;
+        const idx = start + i;
+        if (this.fast >= thrLin && this.fast > this.slow * 2 && idx - this.last >= guardSamples) { this.last = idx; out.push(idx); }
+      }
+      return { onsets: out, peak };
+    } };
+}
+const mic = { on: false, ctx: null, stream: null, node: null, filt: null, det: null, samples: 0, anchor: null, level: 0, hitAt: 0, calib: null };
+function micProcess(e) {
+  const x = e.inputBuffer.getChannelData(0), sr = mic.ctx.sampleRate;
+  if (mic.anchor == null) mic.anchor = performance.now() - x.length / sr * 1000;
+  const r = mic.det.process(x, mic.samples, sr, Math.pow(10, S.micThreshDb / 20), S.micGuardMs / 1000 * sr);
+  r.onsets.forEach(idx => {
+    mic.hitAt = performance.now();
+    if (view === 'play' && !mic.calib) hit('A', mic.anchor + idx / sr * 1000);
+  });
+  mic.samples += x.length;
+  mic.level = Math.max(r.peak, mic.level * 0.85);
+  if (mic.calib) {
+    mic.calib.max = Math.max(mic.calib.max, r.peak);
+    if (performance.now() > mic.calib.until) {
+      const db = mic.calib.max > 0 ? 20 * Math.log10(mic.calib.max) : -80;
+      S.micThreshDb = Math.max(-60, Math.min(-3, Math.round(db + 12)));
+      saveSettings(); mic.calib = null; renderMicControls();
+      toast('Threshold set to ' + S.micThreshDb + ' dB, 12 dB above the room noise.');
+    }
+  }
+}
+async function startMic() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { $('micStatus').textContent = 'This browser can’t use a microphone here. Use Chrome or Edge.'; return; }
+  stopMic();
+  try {
+    const audio = { echoCancellation: false, noiseSuppression: false, autoGainControl: false };
+    if (S.micDevice) audio.deviceId = { exact: S.micDevice };
+    const stream = await navigator.mediaDevices.getUserMedia({ audio });
+    const ctx = new (window.AudioContext || window.webkitAudioContext)({ latencyHint: 'interactive' });
+    const src = ctx.createMediaStreamSource(stream);
+    const filt = ctx.createBiquadFilter(); filt.type = 'lowpass'; filt.Q.value = 0.7;
+    filt.frequency.value = S.micLowpass ? 250 : 20000;
+    const node = ctx.createScriptProcessor(256, 1, 1);
+    const mute = ctx.createGain(); mute.gain.value = 0;
+    src.connect(filt); filt.connect(node); node.connect(mute); mute.connect(ctx.destination);
+    Object.assign(mic, { on: true, ctx, stream, node, filt, det: makeDetector(), samples: 0, anchor: null, level: 0 });
+    node.onaudioprocess = micProcess;
+    await ctx.resume();
+    const track = stream.getAudioTracks()[0];
+    $('micStatus').textContent = 'Listening on ' + (track && track.label ? track.label : 'your microphone') + '. Kick a few times and set the threshold just under your hits. Use headphones for the click track so the mic doesn’t hear it.';
+    logEv('Microphone on');
+    await fillMicDevices();
+  } catch (e) {
+    mic.on = false;
+    $('micStatus').textContent = e.name === 'NotAllowedError' || e.name === 'SecurityError'
+      ? 'The microphone is blocked here (' + e.name + '). Allow it in the browser, or run a saved copy of this page in Chrome or Edge.'
+      : e.name === 'NotFoundError' || e.name === 'OverconstrainedError' ? 'That microphone isn’t available. Plug it in or pick another one.'
+      : 'The microphone couldn’t start: ' + e.message;
+  }
+  renderMicControls(); updateInputLbl();
+}
+function stopMic() {
+  if (mic.node) mic.node.onaudioprocess = null;
+  if (mic.stream) mic.stream.getTracks().forEach(t => t.stop());
+  if (mic.ctx) mic.ctx.close().catch(() => {});
+  Object.assign(mic, { on: false, ctx: null, stream: null, node: null, filt: null, calib: null, level: 0 });
+  updateInputLbl();
+}
+async function fillMicDevices() {
+  try {
+    const devs = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === 'audioinput');
+    const sel = $('micDev'); sel.innerHTML = '';
+    devs.forEach((d, i) => { const o = document.createElement('option'); o.value = d.deviceId; o.textContent = d.label || 'Microphone ' + (i + 1); sel.appendChild(o); });
+    const cur = mic.stream && mic.stream.getAudioTracks()[0] && mic.stream.getAudioTracks()[0].getSettings().deviceId;
+    if (cur) sel.value = cur;
+    sel.disabled = devs.length < 2 && !!cur;
+    if (devs.length > 1) sel.disabled = false;
+  } catch (e) {}
+}
+function renderMicControls() {
+  $('micToggle').textContent = mic.on ? 'Stop microphone' : 'Start microphone';
+  $('micCal').disabled = !mic.on;
+  $('micCal').textContent = mic.calib ? 'Stay quiet…' : 'Set from room noise';
+  $('s-micThreshDb').value = S.micThreshDb;
+  $('micThrLbl').textContent = String(S.micThreshDb).replace('-', '−');
+  $('micThrMark').style.left = ((S.micThreshDb + 60) / 60 * 100) + '%';
+  $('micLow').checked = !!S.micLowpass;
+  $('s-micGuardMs').value = S.micGuardMs;
+}
+$('micToggle').addEventListener('click', () => { if (mic.on) { stopMic(); $('micStatus').textContent = 'Off.'; renderMicControls(); logEv('Microphone off'); } else startMic(); });
+$('micCal').addEventListener('click', () => { if (!mic.on) return; mic.calib = { until: performance.now() + 1500, max: 0 }; renderMicControls(); });
+$('micDev').addEventListener('change', e => { S.micDevice = e.target.value; saveSettings(); startMic(); });
+$('micLow').addEventListener('change', e => { S.micLowpass = e.target.checked; saveSettings(); if (mic.filt) mic.filt.frequency.value = S.micLowpass ? 250 : 20000; });
+$('s-micThreshDb').addEventListener('input', e => { S.micThreshDb = parseFloat(e.target.value); saveSettings(); renderMicControls(); });
+function renderMicMeter() {
+  if (view !== 'settings') return;
+  const db = mic.level > 0 ? 20 * Math.log10(mic.level) : -80;
+  $('micLevel').style.width = Math.max(0, Math.min(100, (db + 60) / 60 * 100)) + '%';
+  $('micLevel').classList.toggle('hit', performance.now() - mic.hitAt < 90);
+  if (!mic.on) $('micLevel').style.width = '0%';
+}
+
+/* ---------- boot ---------- */
+renderStaticPlay();
+fillPirates();
+renderFolder();
+idb.get('dir').then(async h => {
+  if (!h) return;
+  dir = h;
+  try { dirReady = (await h.queryPermission({ mode: 'readwrite' })) === 'granted'; } catch (e) { dirReady = false; }
+  renderFolder(); if (dirReady) refreshWallet();
+}).catch(() => {});
+if (S.mode === 'click') { S.mode = 'free'; renderStaticPlay(); } // audio needs a click to start
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
